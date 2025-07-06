@@ -1,0 +1,239 @@
+<script>
+function checkFormula() {
+    const formula = document.getElementById("formulaInput").value;
+
+    fetch("http://localhost:5000/api/check-formula", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ formula })
+    })
+    .then(response => response.json())
+    .then(data => {
+    document.getElementById("hints").innerText = data.hint;
+    })
+    .catch(err => {
+    document.getElementById("hints").innerText = "Error contacting server.";
+    });
+}
+</script>
+
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Internship Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            text-align: center;
+        }
+
+        #programSelect,
+        #taskArea,
+        #hintArea,
+        #bossMessage,
+        #lunchTimer 
+        #taskTimer {
+            margin: 20px auto;
+        }
+
+        #internCartoon {
+            width: 200px;
+            display: none;
+            margin-top: 20px;
+        }
+
+        #computerScreen {
+            width: 500px;
+            height: 300px;
+            background: #222;
+            color: #fff;
+            margin: 20px auto;
+            padding: 20px;
+            display: none;
+            border-radius: 10px;
+        }
+
+        #hintButton,
+        #lunchButton {
+            margin: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>BankXL Internship Simulation</h1>
+
+    <div id="programSelect">
+        <label>Select Your Program:</label>
+        <select id="program">
+            <option value="">--Choose--</option>
+            <option value="consulting">Consulting</option>
+            <option value="investment">Investment Banking</option>
+            <option value="private">Private Equity</option>
+        </select>
+        <button onclick="startSimulation()">Start</button>
+    </div>
+
+    <img id="internCartoon" src="" alt="Intern Cartoon">
+
+    <div id="computerScreen">
+        <h2>Today's Task:</h2>
+        <p id="taskDescription"></p>
+        <div id="hintArea">
+            <button id="hintButton" onclick="showHint()">Need a Hint?</button>
+        </div>
+    </div>
+
+    <div id="bossMessage" style="display:none; color: red; font-weight: bold;"></div>
+    <div id="lunchTimer" style="display:none; font-size: 18px;"></div>
+
+    <script>
+        const tasks = {
+            consulting: ["Prepare market research slides", "Client presentation dry-run", "Competitor analysis"],
+            investment: ["Build 3-statement financial model", "Pitch deck review", "Valuation DCF task"],
+            private: ["LBO model simulation", "Investment memo drafting", "Portfolio company update"]
+        };
+
+        const hints = {
+            consulting: "Tip: Look up similar case studies for benchmarks.",
+            investment: "Tip: Double-check your balance sheet links and formulas.",
+            private: "Tip: Focus on cash flow drivers in your LBO assumptions."
+        };
+
+        const images = {
+            consulting: "consulting-intern.png",
+            investment: "ib-intern.png",
+            private: "pe-intern.png"
+        };
+
+        let currentProgram = "";
+        let currentTaskIndex = 0;
+        let lunchInterval;
+
+        function startSimulation() {
+            currentProgram = document.getElementById("program").value;
+            if (!currentProgram) {
+                alert("Please select a program.");
+                return;
+            }
+
+            document.getElementById("internCartoon").src = images[currentProgram];
+            document.getElementById("internCartoon").style.display = "block";
+            document.getElementById("computerScreen").style.display = "block";
+
+            assignTask();
+            setTimeout(showBossMeeting, 15000);  // Boss interrupts after 15s
+            setTimeout(startLunchBreak, 30000);  // Lunch break after 30s
+        }
+
+        function assignTask() {
+            const taskDesc = tasks[currentProgram][currentTaskIndex % tasks[currentProgram].length];
+            document.getElementById("taskDescription").innerText = taskDesc;
+        }
+
+        function showHint() {
+            alert(hints[currentProgram] + "\nVisit BankXL software to practice this task.");
+        }
+
+        function showBossMeeting() {
+            document.getElementById("bossMessage").innerText = "Boss: Join the team meeting now!";
+            document.getElementById("bossMessage").style.display = "block";
+            setTimeout(() => {
+                document.getElementById("bossMessage").style.display = "none";
+                nextTask();
+            }, 5000);
+        }
+
+        function startLunchBreak() {
+            document.getElementById("lunchTimer").style.display = "block";
+            let timeLeft = 15;
+            document.getElementById("lunchTimer").innerText = `Lunch Break: ${timeLeft} min remaining`;
+
+            lunchInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById("lunchTimer").innerText = `Lunch Break: ${timeLeft} min remaining`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(lunchInterval);
+                    document.getElementById("lunchTimer").style.display = "none";
+                    nextTask();
+                }
+            }, 1000);  // Simulate 1 min per second for demo
+        }
+
+        function nextTask() {
+            currentTaskIndex++;
+            assignTask();
+        }
+
+    </script>
+
+</body>
+
+</html>
+
+
+
+#for showing hints
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Financial Formula Checker</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+
+        textarea {
+            width: 400px;
+            height: 50px;
+        }
+
+        #hints {
+            margin-top: 10px;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Enter Your Financial Formula:</h2>
+    <textarea id="formulaInput" placeholder="Example: Revenue - COGS + EBITDA"></textarea>
+    <br>
+    <button onclick="checkFormula()">Check Formula</button>
+
+    <div id="hints"></div>
+
+    <script>
+        function checkFormula() {
+            const formula = document.getElementById("formulaInput").value;
+
+            fetch('/check_formula', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ formula: formula })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const hintsDiv = document.getElementById("hints");
+                    hintsDiv.innerHTML = "<strong>Hints:</strong><br>" + data.hints.join("<br>");
+                })
+                .catch(err => {
+                    console.error("Error:", err);
+                });
+        }
+    </script>
+
+</body>
+
+</html>
