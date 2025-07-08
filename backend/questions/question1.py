@@ -31,3 +31,5 @@ def process_input(user_input):
             "Remember these numbers are randomly generated for each instance."
         )
     return ""
+
+print(process_input("hello"))
