@@ -1,6 +1,96 @@
 import re
 import random
 
+import random
+import time
+
+# Predefined avatars
+AVATAR_OPTIONS = [
+    "🧑‍💼 Business Person",
+    "👩‍💻 Techie",
+    "🧑‍🎓 Analyst",
+    "🧑‍🔬 Strategist"
+]
+
+MEETING_TYPES = [
+    "Client Meeting",
+    "Investor Update",
+    "Legal Review",
+    "Internal Sync"
+]
+
+class Intern:
+    def __init__(self, name):
+        self.name = name
+        self.avatar = None
+        self.tasks = []
+        self.whiteboard = []
+    
+    def choose_avatar(self):
+        print("\nChoose your avatar:")
+        for i, avatar in enumerate(AVATAR_OPTIONS, start=1):
+            print(f"{i}. {avatar}")
+        choice = int(input("Enter the number: "))
+        self.avatar = AVATAR_OPTIONS[choice - 1]
+        print(f"✅ Avatar set to: {self.avatar}")
+
+    def receive_meeting_invite(self):
+        meeting = random.choice(MEETING_TYPES)
+        print(f"\n📨 Boss: You have a new meeting invite → {meeting}")
+        accept = input("Join meeting now? (y/n): ").lower()
+        if accept == 'y':
+            self.join_meeting(meeting)
+        else:
+            print("Meeting declined or deferred.\n")
+    
+    def join_meeting(self, meeting_type):
+        print(f"\n✅ Joining {meeting_type}...")
+        time.sleep(1)
+        print(f"🗣️ {meeting_type} in progress...\n")
+
+    def use_whiteboard(self):
+        print("\n📝 Whiteboard - Write your thoughts. Type 'exit' to stop.")
+        while True:
+            entry = input("Write or draw: ")
+            if entry.lower() == 'exit':
+                break
+            self.whiteboard.append(entry)
+            print("✏️ Saved to whiteboard.")
+
+    def show_whiteboard(self):
+        print("\n📋 Whiteboard Summary:")
+        if not self.whiteboard:
+            print("No entries yet.")
+        for i, entry in enumerate(self.whiteboard, start=1):
+            print(f"{i}. {entry}")
+
+def simulation():
+    intern = Intern(name=input("Enter your name: "))
+    intern.choose_avatar()
+
+    while True:
+        print("\n=== INTERN DASHBOARD ===")
+        print("1. Receive Meeting Invite")
+        print("2. Use Whiteboard")
+        print("3. View Whiteboard")
+        print("4. Exit Simulation")
+        action = input("Choose an option: ")
+
+        if action == '1':
+            intern.receive_meeting_invite()
+        elif action == '2':
+            intern.use_whiteboard()
+        elif action == '3':
+            intern.show_whiteboard()
+        elif action == '4':
+            print("👋 Exiting simulation.")
+            break
+        else:
+            print("Invalid option. Try again.")
+
+# Run simulation
+if __name__ == "__main__":
+    simulation()
 
 def process_input(user_input):
     """
@@ -1234,8 +1324,6 @@ def process_input(user_id, user_input, company_names):
 
 import re
 
-app = Flask(__name__)
-
 MISTAKE_HINTS = {
     "unmatched_parentheses": "Check for missing or extra parentheses.",
     "invalid_characters": "Formula contains invalid characters. Stick to variables, numbers, and operators.",
@@ -1293,5 +1381,24 @@ def check_formula():
     return {"hints": hints}
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+tasks = [
+    "Build 3-statement model",
+    "Draft client memo",
+    "Run comps analysis",
+    "Join due diligence call",
+    "Update investor presentation"
+
+    COME BACK AND ADD MORE
+];
+
+let userTaskIndex = {}; // Track tasks per user/session
+
+app.get('next-task', (req, res) => {
+    const user = req.query.user || 'default';
+
+    if (!userTaskIndex[user]) userTaskIndex[user] = 0;
+    if user taskInex > 3; (userTaskIndex) = 0
+
+    const task = tasks[userTaskIndex[user]] || "No more tasks for now!";
+    userTaskIndex[user] += 1;
+});
