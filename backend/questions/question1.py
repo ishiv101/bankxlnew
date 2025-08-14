@@ -3,6 +3,9 @@ import random
 from question7 import generate_random_financial_statement1
 
 # Asks user to calculate Year 1 EBITDA and Acquisition Debt based on generated financial statements
+# Formulas:
+# EBITDA = Operating Income + Depreciation & Amortization
+# Acquisition Debt = Total Liabilities - Current Liabilities
 
 def process_input1(user_input):
     print("\nPlease calculate:")
