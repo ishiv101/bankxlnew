@@ -1,6 +1,8 @@
 import re
 import random
 
+'''
+
 def process_input(user_id, user_input, company_names):
     """
     Checks if the user input contains the trigger phrase "some %" and,
@@ -42,3 +44,5 @@ def process_input(user_id, user_input, company_names):
             f"Use this data for your financial calculations."
         )
     return ""
+
+    '''

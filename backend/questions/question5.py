@@ -1,7 +1,7 @@
 import re
 import random
 
-
+'''
 def generate_random_financial_statement(company_name):
     """Generates a random simplified financial statement."""
     statement_type = random.choice(["Income Statement", "Balance Sheet", "Cash Flows"])
@@ -73,3 +73,4 @@ def generate_random_financial_statement(company_name):
 
     return data
 
+'''

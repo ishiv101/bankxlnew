@@ -1,3 +1,5 @@
+'''''
+
 def process_input(user_id, user_input, company_names):
     """
     Checks if the user input contains the trigger phrase "Given a cash flow statement" and,
@@ -30,3 +32,4 @@ def process_input(user_id, user_input, company_names):
         output_message += "Use this statement for your relevant financial calculations."
         return output_message
     return ""
+    '''

@@ -1,35 +1,65 @@
 import re
 import random
+from question7 import generate_random_financial_statement1
 
-def process_input(user_input):
-    """
-    Checks if the user input contains the trigger phrase and provides random numbers
-    for private equity calculations if it does.
+# Asks user to calculate Year 1 EBITDA and Acquisition Debt based on generated financial statements
 
-    Returns:
-        A string indicating whether the trigger was found and, if so,
-        a message with random numbers. Otherwise, returns an empty string.
-    """
+def process_input1(user_input):
+    print("\nPlease calculate:")
+    print("1. Year 1 EBITDA")
+    print("2. Acquisition Debt\n")
 
-    if re.search(r"given info about the company", user_input, re.IGNORECASE):
-        # Generate random numbers for different calculations
-        revenue_growth = round(random.uniform(0.05, 0.20), 2)  # 5% to 20%
-        ebitda_margin = round(random.uniform(0.10, 0.30), 2)  # 10% to 30%
-        exit_multiple = round(random.uniform(5.0, 12.0), 1)  # 5x to 12x
-        discount_rate = round(random.uniform(0.08, 0.15), 2)  # 8% to 15%
-        debt_amount_multiplier = round(
-            random.uniform(0.5, 3.0), 1
-        )  # 0.5x to 3x of EBITDA
+    requested_statements = set()
+    max_statements = {"Income Statement", "Balance Sheet", "Cash Flows"}
 
-        return (
-            "Detected 'given info about the company'. Here are some numbers for your calculations:\n"
-            f"- Revenue Growth Rate: {revenue_growth}\n"
-            f"- EBITDA Margin: {ebitda_margin}\n"
-            f"- Exit Multiple: {exit_multiple}x\n"
-            f"- Discount Rate: {discount_rate}\n"
-            f"- Debt Amount (as a multiple of EBITDA): {debt_amount_multiplier}x\n"
-            "Remember these numbers are randomly generated for each instance."
-        )
-    return ""
+    while True:
+        request = input("Do you request a financial statement Yes or No? :").strip()
 
-print(process_input("hello"))
+        if request.lower() == "yes":
+            if requested_statements == max_statements:
+                print("You have requested all available financial statements.")
+                continue
+
+            statement_type = input("Which of the three financial statements (Income Statement, Balance Sheet, or Cash Flows) do you request?: ").strip()
+
+            if statement_type not in max_statements:
+                print("Invalid statement type. Please choose from Income Statement, Balance Sheet, or Cash Flows.")
+                continue
+
+            if statement_type in requested_statements:
+                print(f"You have already requested the {statement_type}. Please choose another.")
+                continue
+
+            # Generate a random financial statement
+            result = generate_random_financial_statement1("Demo Company", statement_type)
+            print("\nGenerated Financial Statement:\n")
+            for key, value in result.items():
+                print(f"{key}: {value}")
+            requested_statements.add(statement_type)
+
+        elif request.lower() == "no":
+            while True:
+                try:
+                    ebitda_input = float(input("Enter your calculated Year 1 EBITDA (in millions): "))
+                    debt_input = float(input("Enter your calculated Acquisition Debt (in millions): "))
+                except ValueError:
+                    print("Invalid input. Please enter numeric values.")
+                    continue
+                else:
+                    print(f"\nYour Input Summary:\nEBITDA: ${ebitda_input}M\nAcquisition Debt: ${debt_input}M")
+                    break
+            break
+        else:
+            print("Please answer Yes or No.")
+
+def main():
+    while True:
+        user_command = input("Type 'start' to generate a question: ")
+        if user_command.strip().lower() == "start":
+            process_input1(user_command)
+            break
+        else:
+            print("Please type 'start' to begin.")
+
+if __name__ == "__main__":
+    main()

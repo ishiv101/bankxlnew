@@ -1,7 +1,7 @@
 import re
 import random
 
-
+'''
 def generate_random_cash_flow_statement(company_name):
     """Generates a random simplified cash flow statement."""
     data = {"Company": company_name, "Type": "Cash Flow Statement"}
@@ -47,3 +47,4 @@ def generate_random_cash_flow_statement(company_name):
     data["Ending Cash"] = ending_cash
 
     return data
+'''
