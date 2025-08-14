@@ -1,353 +1,480 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Investment Banking Intern Simulation</title>
-  <title>Private Equity Intern Simulation</title>
-  <title>Consulting Intern Simulation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root {
+      --sidebar: #1c2833;
+      --topbar: #34495e;
+      --bg: #f4f8fc;
+      --primary: #3498db;
+      --task-bg: #eaf6ff;
+    }
+
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f4f8fc;
+      background: var(--bg);
       display: flex;
       height: 100vh;
+      overflow: hidden;
     }
 
-    /* Sidebar and Header */
+    /* Sidebar */
     .sidebar {
       width: 250px;
-      background: #1c2833;
-      color: white;
+      background: var(--sidebar);
+      color: #fff;
       padding: 20px;
       display: flex;
       flex-direction: column;
+      gap: 8px;
     }
-    .sidebar h2 {
-      margin-top: 0;
-    }
+    .sidebar h2 { margin: 0 0 10px 0; font-size: 18px; }
     .sidebar button {
-      background: #3498db;
+      background: var(--primary);
       border: none;
       padding: 10px;
-      color: white;
-      border-radius: 5px;
-      margin: 10px 0;
+      color: #fff;
+      border-radius: 6px;
       cursor: pointer;
+      text-align: left;
     }
+    .sidebar .section-title {
+      margin-top: 12px;
+      font-size: 12px;
+      letter-spacing: 0.6px;
+      opacity: 0.8;
+      text-transform: uppercase;
+    }
+    .sidebar ul { list-style: none; padding-left: 0; margin: 6px 0 0 0; }
+    .sidebar li { margin: 6px 0; opacity: 0.9; }
 
+    /* Main area */
     .screen-area {
-      flex-grow: 1;
+      flex: 1;
       display: flex;
       flex-direction: column;
+      min-width: 0;
     }
 
     .top-bar {
-      background: #34495e;
-      color: white;
-      padding: 10px 20px;
+      background: var(--topbar);
+      color: #fff;
+      padding: 10px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
     }
-
+    .top-left { font-weight: 600; }
+    .top-right { display: flex; align-items: center; gap: 16px; }
     .icon {
-      font-size: 24px;
+      font-size: 22px;
       cursor: pointer;
       position: relative;
+      user-select: none;
     }
-
-    .icon span {
+    .icon .badge {
       position: absolute;
-      top: -8px;
+      top: -6px;
       right: -10px;
       background: red;
+      color: #fff;
       border-radius: 50%;
       padding: 2px 6px;
-      font-size: 12px;
+      font-size: 11px;
+      line-height: 1;
     }
 
-    /* Split Screen for Task View */
     .workspace {
       display: flex;
-      height: 100%;
+      flex: 1;
+      min-height: 0;
     }
 
+    /* Split: 3/4 left, 1/4 right */
     .main-work {
       flex: 3;
-      padding: 20px;
-      border-right: 2px solid #ccc;
-      background: #ffffff;
+      padding: 16px;
+      border-right: 2px solid #e2e2e2;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0;
     }
-
     .task-pane {
       flex: 1;
-      padding: 20px;
+      padding: 16px;
       background: #f9f9f9;
       overflow-y: auto;
+      min-width: 260px;
     }
 
-    .excel-sheet, .whiteboard {
-      border: 1px solid #ccc;
-      padding: 15px;
-      margin-bottom: 15px;
+    .panel {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #f7fafc;
+      padding: 12px;
+    }
+    .panel h3 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+    }
+
+    .excel-sheet {
       background: #ecf0f1;
-      height: 40%;
+      height: 45%;
+      min-height: 180px;
+      overflow: auto;
+    }
+    .whiteboard-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      height: calc(55% - 12px);
+      min-height: 200px;
+    }
+    .whiteboard-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .whiteboard {
+      background: #fff;
+      border: 1px solid #ccc;
+      height: 100%;
+      min-height: 160px;
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: crosshair;
     }
 
-    .task-item {
-      margin: 10px 0;
+    .task-form input {
+      width: 100%;
       padding: 10px;
-      background: #eaf6ff;
-      border-left: 4px solid #3498db;
+      border: 2px solid var(--primary);
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    .task-form button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: var(--primary);
+      color: #fff;
       cursor: pointer;
     }
 
-    .tab-label {
-      font-weight: bold;
-      margin-top: 20px;
-      margin-bottom: 5px;
+    .task-list .task-item {
+      background: var(--task-bg);
+      border-left: 4px solid var(--primary);
+      padding: 10px;
+      border-radius: 6px;
+      margin: 8px 0;
+      cursor: pointer;
+    }
+
+    .hint {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    /* Simple tabs placeholder (visual cue) */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .tab {
+      padding: 6px 10px;
+      background: #eaeef2;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .tab.active {
+      background: #d6e9fb;
+      border: 1px solid #bcd8f7;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .task-pane { min-width: 220px; }
     }
   </style>
 </head>
 <body>
 
-<!-- Sidebar -->
-<div class="sidebar">
-  <h2>Intern Dashboard</h2>
-  <button onclick="showTab('tasks')">📝 Task Queue</button>
-  <button onclick="showTab('meetings')">📞 Join Meeting</button>
-  <div class="tab-label">Meetings</div>
-  <ul style="list-style: none; padding-left: 0;">
-    <li>📊 Clients</li>
-    <li>💼 Investors</li>
-    <li>⚖️ Legal Teams</li>
-  </ul>
-</div>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>Intern Dashboard</h2>
+    <button onclick="switchTab('tasks')">📝 Task Queue</button>
+    <button onclick="switchTab('meetings')">📞 Join Meeting</button>
 
-<!-- Main screen -->
-<div class="screen-area">
-  <div class="top-bar">
-    <div>💻 Investment Banking Internship Simulation</div>
-    <div class="icon" onclick="readEmails()">
-      📧 <span id="emailCount">0</span>
-    </div>
-  </div>
+    <div class="section-title">Meetings</div>
+    <ul>
+      <li>📊 Clients</li>
+      <li>💼 Investors</li>
+      <li>⚖️ Legal</li>
+      <li>🏢 Internal</li>
+    </ul>
+  </aside>
 
-  <div class="workspace">
-    <!-- Main working area -->
-    <div class="main-work" id="mainWork">
-      <div class="excel-sheet"><strong>Excel Sheet:</strong><br>Revenue Models, LBO, DCF, Projections...</div>
-      <div class="whiteboard"><strong>Whiteboard:</strong><br>Client Notes, Meeting Agenda, Live Edits...</div>
+  <!-- Main -->
+  <main class="screen-area">
+    <div class="top-bar">
+      <div class="top-left">💻 Investment Banking / PE / Consulting Intern Simulator</div>
+      <div class="top-right">
+        <div class="icon" title="Emails" onclick="openInbox()">
+          📧 <span id="emailCount" class="badge">0</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Right task panel -->
-    <div class="task-pane" id="taskPane">
-      <div><strong>Task Feed</strong></div>
-      <div id="taskList"></div>
+    <div class="workspace">
+      <!-- LEFT (3/4) -->
+      <section class="main-work" id="mainWork">
+        <div class="panel excel-sheet" id="excelPanel">
+          <h3>Excel Sheet</h3>
+          <div id="excelContent">
+            Revenue Models, LBO, DCF, Projections…
+            <div class="hint">Open a task to load its model view here.</div>
+          </div>
+        </div>
+
+        <div class="whiteboard-wrap">
+          <div class="whiteboard-controls">
+            <strong>Whiteboard</strong>
+            <button type="button" onclick="setTool('pen')">✏️ Pen</button>
+            <button type="button" onclick="setTool('eraser')">🩹 Eraser</button>
+            <label>Size <input type="range" id="brushSize" min="2" max="24" value="6" /></label>
+            <input type="color" id="brushColor" value="#1f2937" />
+            <button type="button" onclick="clearBoard()">🗑️ Clear</button>
+          </div>
+          <div class="whiteboard panel">
+            <canvas id="board"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT (1/4) -->
+      <aside class="task-pane" id="taskPane">
+        <div class="tabs">
+          <div id="tabTasks" class="tab active" onclick="switchTab('tasks')">Tasks</div>
+          <div id="tabHints" class="tab" onclick="switchTab('hints')">Hints</div>
+          <div id="tabMeetings" class="tab" onclick="switchTab('meetings')">Meetings</div>
+        </div>
+
+        <div id="panelTasks">
+          <div class="panel">
+            <h3>Assign Task (Boss → Intern)</h3>
+            <form class="task-form" onsubmit="assignTask(event)">
+              <input id="taskInput" type="text" placeholder="e.g., Update the Q2 model…" />
+              <button type="submit">Assign Task</button>
+            </form>
+          </div>
+
+          <div class="panel">
+            <h3>Task Queue</h3>
+            <div id="taskList" class="task-list"></div>
+          </div>
+        </div>
+
+        <div id="panelHints" style="display:none">
+          <div class="panel">
+            <h3>Hints</h3>
+            <ul>
+              <li>Click a task to open it. The main screen (left 3/4) will show Excel + Whiteboard.</li>
+              <li>Use the whiteboard to sketch logic, deal notes, and assumptions.</li>
+              <li>Mail icon shows new emails from Boss/Coworkers — click it to reset the counter.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="panelMeetings" style="display:none">
+          <div class="panel">
+            <h3>Join a Meeting</h3>
+            <button onclick="joinMeeting('Client')">📊 Client</button>
+            <button onclick="joinMeeting('Investor')">💼 Investor</button>
+            <button onclick="joinMeeting('Legal')">⚖️ Legal</button>
+            <button onclick="joinMeeting('Internal')">🏢 Internal</button>
+            <div id="meetingStatus" style="margin-top:8px" class="hint"></div>
+          </div>
+        </div>
+      </aside>
     </div>
-  </div>
-</div>
+  </main>
 
-<script>
-  let emailCount = 0;
-  let taskId = 0;
+  <script>
+    // -----------------------
+    // Email simulation
+    // -----------------------
+    let emailCount = 0;
+    const emailBadge = document.getElementById('emailCount');
 
-  function addEmail(from = "Boss") {
-    emailCount++;
-    document.getElementById("emailCount").innerText = emailCount;
-    const taskList = document.getElementById("taskList");
+    function incrementEmails(from = 'Boss') {
+      emailCount++;
+      emailBadge.textContent = String(emailCount);
+      // Also optionally push a task from email
+      if (Math.random() < 0.5) {
+        pushTask(`${from}: Please complete task ${Date.now().toString().slice(-4)}`);
+      }
+    }
 
-    const task = document.createElement("div");
-    task.className = "task-item";
-    task.textContent = `${from}: Please complete task ${++taskId}`;
-    task.onclick = () => openTask(`Task ${taskId} details go here...`);
-    taskList.appendChild(task);
-  }
+    function openInbox() {
+      alert('Inbox opened. Emails from Boss & Coworkers reviewed.');
+      emailCount = 0;
+      emailBadge.textContent = '0';
+    }
 
-  function readEmails() {
-    emailCount = 0;
-    document.getElementById("emailCount").innerText = emailCount;
-    alert("Opening inbox... emails from boss & coworkers received!");
-  }
+    // Random incoming emails (every 8–14s)
+    setInterval(() => {
+      const senders = ['Boss', 'Coworker', 'Senior VP'];
+      incrementEmails(senders[Math.floor(Math.random() * senders.length)]);
+    }, Math.random() * 6000 + 8000);
 
-  function openTask(details) {
-    document.querySelector(".excel-sheet").innerHTML = `<strong>Excel Sheet:</strong><br>${details} <br>[Model here]`;
-    document.querySelector(".whiteboard").innerHTML = `<strong>Whiteboard:</strong><br>Notes, tasks, and logic associated with: ${details}`;
-  }
+    // -----------------------
+    // Tasks
+    // -----------------------
+    const taskListEl = document.getElementById('taskList');
 
-  function showTab(tabName) {
-    alert(`Switched to: ${tabName === 'tasks' ? 'Task Queue' : 'Meetings'}`);
-  }
+    function assignTask(e) {
+      e.preventDefault();
+      const input = document.getElementById('taskInput');
+      const text = (input.value || '').trim();
+      if (!text) { alert('Enter a task first.'); return; }
+      pushTask(`Boss: ${text}`);
+      input.value = '';
+    }
 
-  // Simulate receiving random emails
-  setInterval(() => {
-    const senders = ["Boss", "Coworker", "HR", "Senior VP"];
-    const sender = senders[Math.floor(Math.random() * senders.length)];
-    addEmail(sender);
-  }, 10000);
-</script>
+    function pushTask(text) {
+      const item = document.createElement('div');
+      item.className = 'task-item';
+      item.textContent = text;
+      item.onclick = () => openTask(text);
+      taskListEl.appendChild(item);
+      taskListEl.scrollTop = taskListEl.scrollHeight;
+    }
 
-<h1>Internship Task Feed</h1>
-<div id="taskFeed"></div>
+    function openTask(details) {
+      // Load main work (3/4 screen) with task content
+      document.getElementById('excelContent').innerHTML =
+        `<div><strong>Loaded Task:</strong> ${details}</div>
+         <ul style="margin:6px 0 0 16px">
+           <li>Open model tabs (Rev, OpEx, CFs)</li>
+           <li>Update assumptions</li>
+           <li>Check sensitivities</li>
+         </ul>`;
 
-<script>
-const taskFeed = document.getElementById('taskFeed');
+      // Optional: visually emphasize that the left is the main focus
+      document.getElementById('excelPanel').scrollIntoView({ behavior: 'smooth' });
+    }
 
-function getNextTask() {
-    fetch('http://localhost:3000/next-task?user=neha')
-        .then(res => res.json())
-        .then(data => {
-            const task = document.createElement('p');
-            task.textContent = `🕒 ${new Date().toLocaleTimeString()}: ${data.task}`;
-            taskFeed.appendChild(task);
-        });
-}
+    // -----------------------
+    // Tabs
+    // -----------------------
+    function switchTab(name) {
+      const tabs = ['tasks','hints','meetings'];
+      tabs.forEach(t => {
+        document.getElementById('panel' + cap(t)).style.display = (t === name ? 'block' : 'none');
+        document.getElementById('tab' + cap(t)).classList.toggle('active', t === name);
+      });
+    }
+    function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
 
-// Initial task
-getNextTask();
+    // -----------------------
+    // Meetings
+    // -----------------------
+    function joinMeeting(type) {
+      const status = document.getElementById('meetingStatus');
+      status.textContent = `Joining ${type} meeting…`;
+      setTimeout(() => {
+        status.textContent = `In ${type} meeting. (Simulated)`;
+      }, 800);
+    }
 
-// Set a randomized 20–30 minute interval
-function scheduleNextTask() {
-    const minutes = Math.floor(Math.random() * 11) + 20; // 20 to 30 min
-    const delay = minutes * 60 * 1000;
+    // -----------------------
+    // Whiteboard (Canvas) – draw & erase
+    // -----------------------
+    const canvas = document.getElementById('board');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let tool = 'pen'; // 'pen' | 'eraser'
+    let brushSize = document.getElementById('brushSize').valueAsNumber || 6;
+    let brushColor = document.getElementById('brushColor').value || '#1f2937';
 
-    setTimeout(() => {
-        getNextTask();
-        scheduleNextTask(); // Schedule again recursively
-    }, delay);
-}
+    function resizeCanvas() {
+      // Save current image, resize, then restore
+      const data = canvas.toDataURL();
+      const img = new Image();
+      img.onload = function(){
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      };
+      img.src = data;
+      if (!data) {
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+      }
+    }
+    window.addEventListener('resize', resizeCanvas);
+    // initialize size after layout paints
+    setTimeout(resizeCanvas, 0);
 
-scheduleNextTask();
-</script>
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+      return { x, y };
+    }
 
-<h1>Internship Task Feed</h1>
-<div id="taskFeed"></div>
+    function startDraw(e) { drawing = true; draw(e); }
+    function endDraw() { drawing = false; ctx.beginPath(); }
+    function draw(e) {
+      if (!drawing) return;
+      const { x, y } = getPos(e);
+      ctx.lineWidth = brushSize;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = (tool === 'pen') ? brushColor : '#ffffff';
+      ctx.globalCompositeOperation = (tool === 'eraser') ? 'destination-out' : 'source-over';
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      e.preventDefault();
+    }
 
-<script>
-const taskFeed = document.getElementById('taskFeed');
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseleave', endDraw);
 
-function getNextTask() {{
-            const task = document.createElement('p');
-            task.textContent = `🕒 ${new Date().toLocaleTimeString()}: ${data.task}`;
-            taskFeed.appendChild(task);
-        });
-}
+    canvas.addEventListener('touchstart', startDraw, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
+    canvas.addEventListener('touchend', endDraw);
 
-// Initial task
-getNextTask();
+    function setTool(name){ tool = name; }
+    document.getElementById('brushSize').addEventListener('input', e => brushSize = e.target.valueAsNumber);
+    document.getElementById('brushColor').addEventListener('input', e => brushColor = e.target.value);
 
-// Set a randomized 20–30 minute interval
-function scheduleNextTask() {
-    const minutes = Math.floor(Math.random() * 11) + 20; // 20 to 30 min
-    const delay = minutes * 60 * 1000;
-
-    setTimeout(() => {
-        getNextTask();
-        scheduleNextTask(); // Schedule again recursively
-    }, delay);
-}
-
-scheduleNextTask();
-</script>
-
-{
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  padding: 20px;
-  text-align: center;
-}
-
-#bossArea, #internArea {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 40px;
-  margin-bottom: 30px;
-}
-
-img {
-  width: 120px;
-  height: auto;
-}
-
-#taskInput {
-  width: 300px;
-  padding: 10px;
-}
-
-#assignButton {
-  padding: 10px 20px;
-  cursor: pointer;
-  margin-left: 10px;
-}
-
-#internTasks {
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
-  width: 400px;
-  margin: auto;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.task {
-  background: #e1f5fe;
-  margin: 8px 0;
-  padding: 10px;
-  border-radius: 6px;
-  animation: slideIn 0.5s ease;
-}
-}
-</style>
-</head>
-<body>
-
-<h1>Boss Fires Tasks at Intern</h1>
-
-<div id="bossArea">
-<div>
-  <img alt="Boss Cartoon">
-  <p><strong>Boss</strong></p>
-</div>
-<div>
-  <input type="text" id="taskInput" placeholder="Enter a task...">
-  <button id="assignButton">Assign Task</button>
-</div>
-</div>
-
-<div id="internArea">
-<div>
-  <img alt="Intern Cartoon">
-  <p><strong>Intern</strong></p>
-</div>
-</div>
-
-<div id="internTasks">
-<h2>Intern's Task List</h2>
-<div id="taskList"></div>
-</div>
-
-<script>
-const assignBtn = document.getElementById("assignButton");
-const taskInput = document.getElementById("taskInput");
-const taskList = document.getElementById("taskList");
-
-assignBtn.addEventListener("click", () => {
-  const taskText = taskInput.value.trim();
-  if (taskText === "") {
-    alert("Enter a task before assigning!");
-    return;
-  }
-
-  const task = document.createElement("div");
-  task.classList.add("task");
-  task.textContent = `📌 ${taskText}`;
-  taskList.appendChild(task);
-
-  taskInput.value = "";
-});
-</script>
-
+    function clearBoard() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  </script>
 </body>
 </html>
