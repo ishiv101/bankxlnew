@@ -1,3 +1,5 @@
+
+''''
 def process_input(user_id, user_input, company_names):
     """
     Checks if the user input contains the trigger phrase "Given all 3 statements" and,
@@ -56,3 +58,6 @@ def process_input(user_id, user_input, company_names):
 
         return output_message
     return ""
+
+    
+    '''

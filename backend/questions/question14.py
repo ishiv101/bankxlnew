@@ -2,6 +2,8 @@ import re
 import random
 
 
+'''
+
 def generate_depreciation_data():
     """Generates random data relevant to different depreciation methods."""
     asset_cost = round(random.uniform(10000, 1000000), 2)
@@ -384,3 +386,5 @@ def check_formula():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+    '''

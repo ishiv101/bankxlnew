@@ -1,7 +1,7 @@
 import re
 import random
 
-
+'''
 def generate_random_financial_statements(company_name):
     """Generates random simplified income statement, balance sheet, and cash flow statement."""
     statements = {"Company": company_name}
@@ -104,3 +104,4 @@ def generate_random_financial_statements(company_name):
     )
 
     return statements
+    '''

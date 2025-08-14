@@ -1,3 +1,4 @@
+'''
 def format_financial_statement(statement_data):
     """Formats a single financial statement for output."""
     output = f"--- {statement_data['Type']} ---\n"
@@ -301,3 +302,4 @@ def process_input(user_id, user_input, company_names):
         return output_message
     return ""
 
+'''
